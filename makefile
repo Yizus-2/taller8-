@@ -24,19 +24,33 @@ check_dependencies: install_dependencies
 # Instalar dependencias según el sistema operativo
 install_dependencies:
 ifeq ($(OS), Linux)
-	@cat /etc/*release | grep -i 'fedora' >/dev/null && PACKAGE_MANAGER="dnf" || PACKAGE_MANAGER="apt-get"
+ifeq ($(DISTRO), ubuntu)
 	@if [ -z "$(GCC_CMD)" ]; then \
-		echo "Instalando gcc..."; \
-		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y gcc; \
+		echo "Instalando gcc en Ubuntu..."; \
+		sudo apt-get update && sudo apt-get install -y gcc; \
 	fi
 	@if [ -z "$(PYTHON_CMD)" ]; then \
-		echo "Instalando Python..."; \
-		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y python3 python3-pip python3-venv; \
+		echo "Instalando Python en Ubuntu..."; \
+		sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-venv; \
 	fi
 	@if [ -z "$(EOG_CMD)" ]; then \
-		echo "Instalando eog..."; \
-		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y eog; \
+		echo "Instalando eog en Ubuntu..."; \
+		sudo apt-get update && sudo apt-get install -y eog; \
 	fi
+else ifeq ($(DISTRO), fedora)
+	@if [ -z "$(GCC_CMD)" ]; then \
+		echo "Instalando gcc en Fedora..."; \
+		sudo dnf install -y gcc; \
+	fi
+	@if [ -z "$(PYTHON_CMD)" ]; then \
+		echo "Instalando Python en Fedora..."; \
+		sudo dnf install -y python3 python3-pip python3-virtualenv; \
+	fi
+	@if [ -z "$(EOG_CMD)" ]; then \
+		echo "Instalando eog en Fedora..."; \
+		sudo dnf install -y eog; \
+	fi
+endif
 else ifeq ($(OS), Darwin)
 	@if [ -z "$(GCC_CMD)" ]; then \
 		echo "Instalando gcc..."; \
@@ -46,6 +60,7 @@ else ifeq ($(OS), Darwin)
 		echo "Instalando Python..."; \
 		brew install python3; \
 	fi
+
 else ifeq ($(OS), Windows_NT)
 	@echo "En Windows, por favor instala manualmente Python, GCC (MinGW) y un visor de imágenes"
 endif
