@@ -24,17 +24,18 @@ check_dependencies: install_dependencies
 # Instalar dependencias según el sistema operativo
 install_dependencies:
 ifeq ($(OS), Linux)
+	@cat /etc/*release | grep -i 'fedora' >/dev/null && PACKAGE_MANAGER="dnf" || PACKAGE_MANAGER="apt-get"
 	@if [ -z "$(GCC_CMD)" ]; then \
 		echo "Instalando gcc..."; \
-		sudo apt-get update && sudo apt-get install -y gcc; \
+		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y gcc; \
 	fi
 	@if [ -z "$(PYTHON_CMD)" ]; then \
 		echo "Instalando Python..."; \
-		sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-venv; \
+		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y python3 python3-pip python3-venv; \
 	fi
 	@if [ -z "$(EOG_CMD)" ]; then \
 		echo "Instalando eog..."; \
-		sudo apt-get update && sudo apt-get install -y eog; \
+		sudo $$PACKAGE_MANAGER update && sudo $$PACKAGE_MANAGER install -y eog; \
 	fi
 else ifeq ($(OS), Darwin)
 	@if [ -z "$(GCC_CMD)" ]; then \
